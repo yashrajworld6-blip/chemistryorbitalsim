@@ -1,0 +1,314 @@
+import React, { useState, useMemo } from 'react';
+
+const ELEMENT_DATA = {
+    1: { s: 'H', n: 'Hydrogen' }, 2: { s: 'He', n: 'Helium' }, 3: { s: 'Li', n: 'Lithium' }, 4: { s: 'Be', n: 'Beryllium' }, 5: { s: 'B', n: 'Boron' },
+    6: { s: 'C', n: 'Carbon' }, 7: { s: 'N', n: 'Nitrogen' }, 8: { s: 'O', n: 'Oxygen' }, 9: { s: 'F', n: 'Fluorine' }, 10: { s: 'Ne', n: 'Neon' },
+    11: { s: 'Na', n: 'Sodium' }, 12: { s: 'Mg', n: 'Magnesium' }, 13: { s: 'Al', n: 'Aluminum' }, 14: { s: 'Si', n: 'Silicon' }, 15: { s: 'P', n: 'Phosphorus' },
+    16: { s: 'S', n: 'Sulfur' }, 17: { s: 'Cl', n: 'Chlorine' }, 18: { s: 'Ar', n: 'Argon' }, 19: { s: 'K', n: 'Potassium' }, 20: { s: 'Ca', n: 'Calcium' },
+    21: { s: 'Sc', n: 'Scandium' }, 22: { s: 'Ti', n: 'Titanium' }, 23: { s: 'V', n: 'Vanadium' }, 24: { s: 'Cr', n: 'Chromium' }, 25: { s: 'Mn', n: 'Manganese' },
+    26: { s: 'Fe', n: 'Iron' }, 27: { s: 'Co', n: 'Cobalt' }, 28: { s: 'Ni', n: 'Nickel' }, 29: { s: 'Cu', n: 'Copper' }, 30: { s: 'Zn', n: 'Zinc' },
+    31: { s: 'Ga', n: 'Gallium' }, 32: { s: 'Ge', n: 'Germanium' }, 33: { s: 'As', n: 'Arsenic' }, 34: { s: 'Se', n: 'Selenium' }, 35: { s: 'Br', n: 'Bromine' },
+    36: { s: 'Kr', n: 'Krypton' }, 37: { s: 'Rb', n: 'Rubidium' }, 38: { s: 'Sr', n: 'Strontium' }, 39: { s: 'Y', n: 'Yttrium' }, 40: { s: 'Zr', n: 'Zirconium' },
+    41: { s: 'Nb', n: 'Niobium' }, 42: { s: 'Mo', n: 'Molybdenum' }, 43: { s: 'Tc', n: 'Technetium' }, 44: { s: 'Ru', n: 'Ruthenium' }, 45: { s: 'Rh', n: 'Rhodium' },
+    46: { s: 'Pd', n: 'Palladium' }, 47: { s: 'Ag', n: 'Silver' }, 48: { s: 'Cd', n: 'Cadmium' }, 49: { s: 'In', n: 'Indium' }, 50: { s: 'Sn', n: 'Tin' },
+    51: { s: 'Sb', n: 'Antimony' }, 52: { s: 'Te', n: 'Tellurium' }, 53: { s: 'I', n: 'Iodine' }, 54: { s: 'Xe', n: 'Xenon' }, 55: { s: 'Cs', n: 'Cesium' },
+    56: { s: 'Ba', n: 'Barium' }, 57: { s: 'La', n: 'Lanthanum' }, 58: { s: 'Ce', n: 'Cerium' }, 59: { s: 'Pr', n: 'Praseodymium' }, 60: { s: 'Nd', n: 'Neodymium' },
+    61: { s: 'Pm', n: 'Promethium' }, 62: { s: 'Sm', n: 'Samarium' }, 63: { s: 'Eu', n: 'Europium' }, 64: { s: 'Gd', n: 'Gadolinium' }, 65: { s: 'Tb', n: 'Terbium' },
+    66: { s: 'Dy', n: 'Dysprosium' }, 67: { s: 'Ho', n: 'Holmium' }, 68: { s: 'Er', n: 'Erbium' }, 69: { s: 'Tm', n: 'Thulium' }, 70: { s: 'Yb', n: 'Ytterbium' },
+    71: { s: 'Lu', n: 'Lutetium' }, 72: { s: 'Hf', n: 'Hafnium' }, 73: { s: 'Ta', n: 'Tantalum' }, 74: { s: 'W', n: 'Tungsten' }, 75: { s: 'Re', n: 'Rhenium' },
+    76: { s: 'Os', n: 'Osmium' }, 77: { s: 'Ir', n: 'Iridium' }, 78: { s: 'Pt', n: 'Platinum' }, 79: { s: 'Au', n: 'Gold' }, 80: { s: 'Hg', n: 'Mercury' },
+    81: { s: 'Tl', n: 'Thallium' }, 82: { s: 'Pb', n: 'Lead' }, 83: { s: 'Bi', n: 'Bismuth' }, 84: { s: 'Po', n: 'Polonium' }, 85: { s: 'At', n: 'Astatine' },
+    86: { s: 'Rn', n: 'Radon' }, 87: { s: 'Fr', n: 'Francium' }, 88: { s: 'Ra', n: 'Radium' }, 89: { s: 'Ac', n: 'Actinium' }, 90: { s: 'Th', n: 'Thorium' },
+    91: { s: 'Pa', n: 'Protactinium' }, 92: { s: 'U', n: 'Uranium' }, 93: { s: 'Np', n: 'Neptunium' }, 94: { s: 'Pu', n: 'Plutonium' }, 95: { s: 'Am', n: 'Americium' },
+    96: { s: 'Cm', n: 'Curium' }, 97: { s: 'Bk', n: 'Berkelium' }, 98: { s: 'Cf', n: 'Californium' }, 99: { s: 'Es', n: 'Einsteinium' }, 100: { s: 'Fm', n: 'Fermium' },
+    101: { s: 'Md', n: 'Mendelevium' }, 102: { s: 'Lg', n: 'Lawrencium' }, 103: { s: 'Lr', n: 'Lawrencium' }, 104: { s: 'Rf', n: 'Rutherfordium' }, 105: { s: 'Db', n: 'Dubnium' },
+    106: { s: 'Sg', n: 'Seaborgium' }, 107: { s: 'Bh', n: 'Bohrium' }, 108: { s: 'Hs', n: 'Hassium' }, 109: { s: 'Mt', n: 'Meitnerium' }, 110: { s: 'Ds', n: 'Darmstadtium' },
+    111: { s: 'Rg', n: 'Roentgenium' }, 112: { s: 'Cn', n: 'Copernicium' }, 113: { s: 'Nh', n: 'Nihonium' }, 114: { s: 'Fl', n: 'Flerovium' }, 115: { s: 'Mc', n: 'Moscovium' },
+    116: { s: 'Lv', n: 'Livermorium' }, 117: { s: 'Ts', n: 'Tennessine' }, 118: { s: 'Og', n: 'Oganesson' },
+};
+
+const NOBLE_GASES = [
+    { symbol: 'He', z: 2 }, { symbol: 'Ne', z: 10 }, { symbol: 'Ar', z: 18 },
+    { symbol: 'Kr', z: 36 }, { symbol: 'Xe', z: 54 }, { symbol: 'Rn', z: 86 }
+];
+
+const ORBITAL_DATA = [
+    { name: '1s', shell: 1, type: 's', l: 0, capacity: 2, boxes: 1 },
+    { name: '2s', shell: 2, type: 's', l: 0, capacity: 2, boxes: 1 },
+    { name: '2p', shell: 2, type: 'p', l: 1, capacity: 6, boxes: 3 },
+    { name: '3s', shell: 3, type: 's', l: 0, capacity: 2, boxes: 1 },
+    { name: '3p', shell: 3, type: 'p', l: 1, capacity: 6, boxes: 3 },
+    { name: '4s', shell: 4, type: 's', l: 0, capacity: 2, boxes: 1 },
+    { name: '3d', shell: 3, type: 'd', l: 2, capacity: 10, boxes: 5 },
+    { name: '4p', shell: 4, type: 'p', l: 1, capacity: 6, boxes: 3 },
+    { name: '5s', shell: 5, type: 's', l: 0, capacity: 2, boxes: 1 },
+    { name: '4d', shell: 4, type: 'd', l: 2, capacity: 10, boxes: 5 },
+    { name: '5p', shell: 5, type: 'p', capacity: 6, boxes: 3 },
+    { name: '6s', shell: 6, type: 's', l: 0, capacity: 2, boxes: 1 },
+];
+
+const calculateFilling = (electronCount) => {
+    let remaining = electronCount;
+    const subshellFilling = [];
+    const correctedElectrons = [];
+
+    for (const orb of ORBITAL_DATA) {
+        if (remaining <= 0) break;
+        const taken = Math.min(remaining, orb.capacity);
+        const boxes = new Array(orb.boxes).fill(0);
+        let tempTaken = taken;
+        for (let i = 0; i < orb.boxes && tempTaken > 0; i++) {
+            boxes[i]++;
+            tempTaken--;
+        }
+        for (let i = 0; i < orb.boxes && tempTaken > 0; i++) {
+            boxes[i]++;
+            tempTaken--;
+        }
+        subshellFilling.push({ ...orb, electrons: taken, boxes });
+        remaining -= taken;
+    }
+
+    let eTotal = 0;
+    for (const orb of ORBITAL_DATA) {
+        if (eTotal >= electronCount) break;
+        const taken = Math.min(electronCount - eTotal, orb.capacity);
+        for (let spin = 1; spin >= -1; spin -= 2) {
+            for (let box = 0; box < orb.boxes; box++) {
+                if (correctedElectrons.length < electronCount &&
+                    correctedElectrons.filter(e => e.subshell === orb.name).length < taken) {
+                    correctedElectrons.push({
+                        n: orb.shell,
+                        l: orb.l,
+                        ml: box - Math.floor(orb.boxes / 2),
+                        ms: spin === 1 ? "+1/2" : "-1/2",
+                        subshell: orb.name
+                    });
+                }
+            }
+        }
+        eTotal += taken;
+    }
+
+    return { subshellFilling, correctedElectrons };
+};
+
+const getConfigs = (electronCount) => {
+    if (electronCount === 0) return { full: 'None', short: 'None' };
+    const { subshellFilling } = calculateFilling(electronCount);
+    const full = subshellFilling.map(orb => `${orb.name}${orb.electrons}`).join(' ');
+
+    let nobleGas = '';
+    let remainingZ = electronCount;
+    let startIdx = 0;
+
+    for (let i = NOBLE_GASES.length - 1; i >= 0; i--) {
+        if (electronCount >= NOBLE_GASES[i].z) {
+            nobleGas = `[${NOBLE_GASES[i].symbol}]`;
+            remainingZ = electronCount - NOBLE_GASES[i].z;
+            let zCount = 0;
+            for (let j = 0; j < ORBITAL_DATA.length; j++) {
+                zCount += ORBITAL_DATA[j].capacity;
+                if (zCount >= NOBLE_GASES[i].z) {
+                    startIdx = j + 1;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    const shortFilling = [];
+    let rem = remainingZ;
+    for (let i = startIdx; i < ORBITAL_DATA.length; i++) {
+        if (rem <= 0) break;
+        const taken = Math.min(rem, ORBITAL_DATA[i].capacity);
+        shortFilling.push(`${ORBITAL_DATA[i].name}${taken}`);
+        rem -= taken;
+    }
+
+    return { full, short: `${nobleGas} ${shortFilling.join(' ')}`.trim() };
+};
+
+const OrbitalBox = ({ electrons }) => (
+    <div className="flex items-center justify-center w-8 h-8 border-2 border-gray-500 bg-gray-800 rounded">
+        <div className="flex items-center gap-1">
+            {electrons >= 1 && <span className="text-white font-bold text-xl">↑</span>}
+            {electrons === 2 && <span className="text-white font-bold text-xl">↓</span>}
+        </div>
+    </div>
+);
+
+const AtomicModel = ({ filling, viewMode }) => {
+    return (
+        <div className="relative w-full h-[500px] flex items-center justify-center bg-black rounded border-2 border-gray-600 overflow-hidden">
+            <div className="z-10 w-6 h-6 bg-white rounded-full flex items-center justify-center text-[8px] font-bold text-black">
+                (+)
+            </div>
+            {ORBITAL_DATA.map((orb, idx) => {
+                if (idx > 0 && ORBITAL_DATA[idx-1].shell === orb.shell) return null;
+                const radius = orb.shell * 30;
+                return (
+                    <div key={orb.shell} className="absolute border border-gray-800 rounded-full" style={{ width: radius * 2, height: radius * 2 }}>
+                    </div>
+                );
+            })}
+            {viewMode === 'bohr' ? (
+                filling.map((orb, orbIdx) => (
+                    <React.Fragment key={orbIdx}>
+                        {Array.from({ length: orb.electrons }).map((_, eIdx) => {
+                            const radius = orb.shell * 30;
+                            const startAngle = (orbIdx * 30) + (eIdx * (360 / orb.electrons));
+                            return (
+                                <div
+                                    key={`${orbIdx}-${eIdx}`}
+                                    className={`absolute z-20 w-3 h-3 rounded-full electron-orbit bg-blue-400 shadow-[0_0_5px_white]`}
+                                    style={{
+                                        '--radius': `${radius}px`,
+                                        '--duration': `${5 + orb.shell}s`,
+                                        transform: `rotate(${startAngle}deg)`
+                                    }}
+                                />
+                            );
+                        })}
+                    </React.Fragment>
+                ))
+            ) : (
+                filling.map((orb, orbIdx) => (
+                    <React.Fragment key={orbIdx}>
+                        {Array.from({ length: orb.electrons }).map((_, eIdx) => {
+                            const radius = orb.shell * 30;
+                            return (
+                                <div
+                                    key={`cloud-${orbIdx}-${eIdx}`}
+                                    className="absolute z-0 rounded-full"
+                                    style={{
+                                        width: radius * 1.5,
+                                        height: radius * 1.5,
+                                        backgroundColor: 'rgba(100, 150, 255, 0.08)',
+                                        filter: 'blur(25px)',
+                                        left: `calc(50% - ${radius * 0.75}px)`,
+                                        top: `calc(50% - ${radius * 0.75}px)`,
+                                        transform: `rotate(${orbIdx * 45}deg) translateX(${radius * 0.1}px)`
+                                    }}
+                                />
+                            );
+                        })}
+                    </React.Fragment>
+                ))
+            )}
+        </div>
+    );
+};
+
+export default function QuantumVisualizer() {
+    const [electronCount, setElectronCount] = useState(1);
+    const [viewMode, setViewMode] = useState('bohr');
+    const { subshellFilling, correctedElectrons } = useMemo(() => calculateFilling(electronCount), [electronCount]);
+    const { full, short } = useMemo(() => getConfigs(electronCount), [electronCount]);
+    const element = ELEMENT_DATA[electronCount] || { s: '??', n: 'Unknown Element' };
+
+    return (
+        <div className="min-h-screen bg-gray-900 text-gray-300 p-6">
+            <div className="max-w-5xl mx-auto space-y-6">
+                <header className="text-center py-4">
+                    <h1 className="text-3xl font-bold text-white mb-2">Atom Project</h1>
+                    <p className="mb-4">Simulating how electrons go into orbitals</p>
+
+                    <div className="flex items-center justify-center gap-6 bg-gray-800 p-4 rounded border border-gray-600 inline-flex">
+                        <span className="font-bold">Add Electrons:</span>
+                        <div className="flex items-center gap-4">
+                            <button onClick={() => setElectronCount(Math.max(0, electronCount - 1))} className="px-4 py-1 bg-gray-700 hover:bg-gray-600 rounded border border-gray-500">-</button>
+                            <span className="text-2xl font-mono font-bold">{electronCount}</span>
+                            <button onClick={() => setElectronCount(Math.min(118, electronCount + 1))} className="px-4 py-1 bg-gray-700 hover:bg-gray-600 rounded border border-gray-500">+</button>
+                        </div>
+                    </div>
+                </header>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-6">
+                        <section className="bg-gray-800 p-4 rounded border border-gray-600">
+                            <h2 className="text-lg font-bold mb-2">Element Info:</h2>
+                            <p className="text-xl">{element.n} ({element.s})</p>
+                            <p className="mt-2"><b className="text-white">Full:</b> {full}</p>
+                            <p><b className="text-white">Shorthand:</b> {short}</p>
+                        </section>
+
+                        <section className="bg-gray-800 p-4 rounded border border-gray-600">
+                            <h2 className="text-lg font-bold mb-2">Orbital Boxes:</h2>
+                            <div className="flex flex-wrap gap-x-6 gap-y-4">
+                                {subshellFilling.map((orb, i) => (
+                                    <div key={i} className="flex flex-col items-center gap-1">
+                                        <span className="text-xs">{orb.name}</span>
+                                        <div className="flex gap-1">
+                                            {orb.boxes.map((e, bIdx) => <OrbitalBox key={bIdx} electrons={e} />)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    </div>
+
+                    <div className="space-y-6">
+                        <section className="bg-gray-800 p-4 rounded border border-gray-600">
+                            <div className="flex justify-between items-center mb-2">
+                                <h2 className="text-lg font-bold">Visual Model:</h2>
+                                <div className="flex gap-2 text-xs">
+                                    <button
+                                        onClick={() => setViewMode('bohr')}
+                                        className={`px-2 py-1 rounded border ${viewMode === 'bohr' ? 'bg-gray-600 border-white' : 'bg-gray-700 border-gray-500'}`}
+                                    >
+                                        Bohr
+                                    </button>
+                                    <button
+                                        onClick={() => setViewMode('cloud')}
+                                        className={`px-2 py-1 rounded border ${viewMode === 'cloud' ? 'bg-gray-600 border-white' : 'bg-gray-700 border-gray-500'}`}
+                                    >
+                                        Quantum Cloud
+                                    </button>
+                                </div>
+                            </div>
+                            <AtomicModel filling={subshellFilling} viewMode={viewMode} />
+                        </section>
+                    </div>
+                </div>
+
+                <section className="bg-gray-800 p-4 rounded border border-gray-600 overflow-x-auto">
+                    <h2 className="text-lg font-bold mb-2">Quantum Numbers Table:</h2>
+                    <table className="custom-table text-sm">
+                        <thead className="bg-gray-700">
+                            <tr className="text-white">
+                                <th>#</th>
+                                <th>Orbital</th>
+                                <th>n</th>
+                                <th>l</th>
+                                <th>ml</th>
+                                <th>ms</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {correctedElectrons.length === 0 && (
+                                <tr><td colSpan="6" className="text-center py-4 italic">No electrons...</td></tr>
+                            )}
+                            {correctedElectrons.map((e, i) => (
+                                <tr key={i}>
+                                    <td>{i + 1}</td>
+                                    <td className="font-mono">{e.subshell}</td>
+                                    <td>{e.n}</td>
+                                    <td>{e.l}</td>
+                                    <td>{e.ml}</td>
+                                    <td>{e.ms}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </section>
+
+                <footer className="bg-gray-800 p-4 rounded border border-gray-600 text-sm text-gray-400">
+                    <h3 className="font-bold text-white mb-2">How this works:</h3>
+                    <p>This app uses the <b className="text-white">Aufbau Principle</b> to fill orbitals from lowest energy to highest. It follows <b className="text-white">Hund's Rule</b> (filling boxes singly first) and the <b className="text-white">Pauli Exclusion Principle</b> (max 2 electrons per orbital with opposite spin).</p>
+                </footer>
+            </div>
+        </div>
+    );
+}
